@@ -1,0 +1,581 @@
+/* ================= REWARDS PAGE STYLES ================= */
+.rewards-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.rewards-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: white;
+}
+
+.rewards-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.rewards-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.rewards-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Wallet Summary */
+.wallet-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.wallet-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.wallet-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.wallet-icon {
+  font-size: 2.5rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.wallet-info {
+  flex: 1;
+}
+
+.wallet-label {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wallet-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-top: 0.25rem;
+}
+
+/* Level Progress */
+.level-progress-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.level-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.current-level {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #667eea;
+}
+
+.next-level {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.level-progress-bar {
+  width: 100%;
+  height: 16px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.level-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+
+/* Rewards Shop */
+.rewards-shop {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.shop-header {
+  margin-bottom: 1.5rem;
+}
+
+.shop-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.shop-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e5e7eb;
+  overflow-x: auto;
+}
+
+.shop-tab {
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.shop-tab.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+}
+
+.shop-tab:hover:not(.active) {
+  color: #4b5563;
+}
+
+.shop-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.shop-item-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.shop-item-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.shop-item-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.shop-item-icon {
+  font-size: 2.5rem;
+}
+
+.shop-item-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.shop-item-desc {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.shop-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shop-item-cost {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #667eea;
+}
+
+.shop-item-btn {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.shop-item-btn.owned {
+  background: #10b981;
+  color: white;
+  cursor: default;
+}
+
+.shop-item-btn.available {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.shop-item-btn.available:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.shop-item-btn.disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Achievements */
+.achievements-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.achievements-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+}
+
+.achievements-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.achievement-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.achievement-card.completed {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.achievement-icon {
+  font-size: 3rem;
+  filter: grayscale(100%);
+}
+
+.achievement-card.completed .achievement-icon {
+  filter: grayscale(0%);
+}
+
+.achievement-details {
+  flex: 1;
+}
+
+.achievement-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.achievement-desc {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.achievement-progress {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.achievement-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.achievement-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.achievement-progress-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 60px;
+  text-align: right;
+}
+
+/* Activity Timeline */
+.activity-timeline-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+}
+
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border-left: 3px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.timeline-item:hover {
+  border-left-color: #667eea;
+  background: #f9fafb;
+}
+
+.timeline-icon {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  flex-shrink: 0;
+}
+
+.timeline-content {
+  flex: 1;
+}
+
+.timeline-description {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.timeline-timestamp {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+/* Toast Notifications */
+.toast-notification {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast-notification.success {
+  border-left: 4px solid #10b981;
+}
+
+.toast-notification.error {
+  border-left: 4px solid #ef4444;
+}
+
+.toast-icon {
+  font-size: 1.5rem;
+}
+
+.toast-message {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Claim XP Button */
+.claim-xp-btn {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+}
+
+.claim-xp-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
+}
+
+.claim-xp-btn:active {
+  transform: translateY(0);
+}
+
+.claim-xp-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Dark Mode for Rewards */
+body.dark-mode .wallet-card,
+body.dark-mode .level-progress-section,
+body.dark-mode .rewards-shop,
+body.dark-mode .achievements-section,
+body.dark-mode .activity-timeline-section {
+  background: #1f2937;
+}
+
+body.dark-mode .wallet-value,
+body.dark-mode .shop-title,
+body.dark-mode .achievements-title,
+body.dark-mode .timeline-title,
+body.dark-mode .shop-item-name,
+body.dark-mode .achievement-name,
+body.dark-mode .timeline-description {
+  color: white;
+}
+
+body.dark-mode .wallet-label,
+body.dark-mode .next-level,
+body.dark-mode .shop-item-desc,
+body.dark-mode .achievement-desc,
+body.dark-mode .achievement-progress-text,
+body.dark-mode .timeline-timestamp {
+  color: #9ca3af;
+}
+
+body.dark-mode .shop-item-card,
+body.dark-mode .achievement-card {
+  border-color: #374151;
+}
+
+body.dark-mode .shop-item-card:hover {
+  border-color: #667eea;
+}
+
+body.dark-mode .timeline-item {
+  border-left-color: #374151;
+}
+
+body.dark-mode .timeline-item:hover {
+  border-left-color: #667eea;
+  background: #374151;
+}
+
+/* Responsive Design for Rewards */
+@media (max-width: 768px) {
+  .rewards-page {
+    padding: 1rem;
+  }
+
+  .rewards-title {
+    font-size: 2rem;
+  }
+
+  .wallet-summary {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .shop-items-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .achievement-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .toast-notification {
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
+  }
+}

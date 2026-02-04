@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Chatbot from './Chatbot'
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, Legend
@@ -17,8 +18,9 @@ const getReward = (consistency) => {
   return { badge: '🌱', title: 'SEEDLING', message: 'Every journey starts with a single step!', color: '#4CAF50' }
 }
 
-function Analysis({ tasks, theme, toggleTheme }) {
+function Analysis({ tasks, theme, toggleTheme, currentUser, handleLogout }) {
   const navigate = useNavigate()
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false)
   const [viewMode, setViewMode] = useState('daily') // daily, weekly, monthly
   
   // Get current month info
@@ -35,12 +37,24 @@ function Analysis({ tasks, theme, toggleTheme }) {
   // Generate array of days
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1)
 
+  // Helper function to get date string
+  const getDateStr = (dayIndex) => `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(dayIndex + 1).padStart(2, '0')}`
+
+  // Helper function to check if a day is completed (supports both old and new format)
+  const isDayCompleted = (task, dayIndex) => {
+    if (task.completedDates) {
+      return task.completedDates[getDateStr(dayIndex)] || false
+    }
+    // Fallback for old format
+    return task.completedDays && task.completedDays[dayIndex] || false
+  }
+
   // Find the last day where ANY task was checked - all days up to that are "tracked"
   const getTrackedDays = () => {
     // Find the last day with any check
     let lastCheckedDay = -1
     for (let d = currentDay - 1; d >= 0; d--) {
-      const anyTaskCompleted = tasks.some(task => task.completedDays[d])
+      const anyTaskCompleted = tasks.some(task => isDayCompleted(task, d))
       if (anyTaskCompleted) {
         lastCheckedDay = d
         break
@@ -59,16 +73,16 @@ function Analysis({ tasks, theme, toggleTheme }) {
   const totalTrackedDays = trackedDays.length
 
   // Calculate consistency based on TRACKED DAYS only
-  const calculateConsistency = (completedDays) => {
+  const calculateConsistency = (task) => {
     if (totalTrackedDays === 0) return 0
-    const completedOnTrackedDays = trackedDays.filter(d => completedDays[d]).length
+    const completedOnTrackedDays = trackedDays.filter(d => isDayCompleted(task, d)).length
     return Math.round((completedOnTrackedDays / totalTrackedDays) * 100)
   }
 
   // Calculate total stats based on tracked days only
   const totalTasks = tasks.length
   const totalCompleted = tasks.reduce((acc, task) => 
-    acc + trackedDays.filter(d => task.completedDays[d]).length, 0
+    acc + trackedDays.filter(d => isDayCompleted(task, d)).length, 0
   )
   const totalPossible = totalTasks * totalTrackedDays
   const overallConsistency = totalPossible > 0 
@@ -77,7 +91,7 @@ function Analysis({ tasks, theme, toggleTheme }) {
 
   // Prepare data for charts - using tracked days basis
   const goalConsistencyData = tasks.map(task => {
-    const completedOnTrackedDays = trackedDays.filter(d => task.completedDays[d]).length
+    const completedOnTrackedDays = trackedDays.filter(d => isDayCompleted(task, d)).length
     return {
       name: task.name.length > 10 ? task.name.substring(0, 10) + '...' : task.name,
       fullName: task.name,
@@ -90,7 +104,7 @@ function Analysis({ tasks, theme, toggleTheme }) {
   // Daily completion data (how many tasks completed each day)
   const dailyData = trackedDays.map(dayIndex => {
     const completedCount = tasks.reduce((acc, task) => 
-      acc + (task.completedDays[dayIndex] ? 1 : 0), 0
+      acc + (isDayCompleted(task, dayIndex) ? 1 : 0), 0
     )
     return {
       day: `Day ${dayIndex + 1}`,
@@ -116,7 +130,7 @@ function Analysis({ tasks, theme, toggleTheme }) {
       let weekCompleted = 0
       tasks.forEach(task => {
         trackedInWeek.forEach(d => {
-          if (task.completedDays[d]) weekCompleted++
+          if (isDayCompleted(task, d)) weekCompleted++
         })
       })
       
@@ -157,7 +171,7 @@ function Analysis({ tasks, theme, toggleTheme }) {
     let weekCompleted = 0
     tasks.forEach(task => {
       trackedInWeek.forEach(d => {
-        if (task.completedDays[d]) weekCompleted++
+        if (isDayCompleted(task, d)) weekCompleted++
       })
     })
     
@@ -280,7 +294,7 @@ function Analysis({ tasks, theme, toggleTheme }) {
     const moderateGoals = [] // 50-69%
     
     tasks.forEach((task) => {
-      const completedOnTrackedDays = trackedDays.filter(d => task.completedDays[d]).length
+      const completedOnTrackedDays = trackedDays.filter(d => isDayCompleted(task, d)).length
       const consistency = totalTrackedDays > 0 ? Math.round((completedOnTrackedDays / totalTrackedDays) * 100) : 0
       
       if (consistency < 30) {
@@ -369,7 +383,7 @@ function Analysis({ tasks, theme, toggleTheme }) {
       
       tasks.forEach(task => {
         daysOfThisType.forEach(d => {
-          if (task.completedDays[d]) completed++
+          if (isDayCompleted(task, d)) completed++
         })
       })
       
@@ -407,7 +421,7 @@ function Analysis({ tasks, theme, toggleTheme }) {
       let brokenStreakCount = 0
       
       for (let i = 0; i < trackedDays.length; i++) {
-        if (task.completedDays[trackedDays[i]]) {
+        if (isDayCompleted(task, trackedDays[i])) {
           currentStreak++
           maxStreak = Math.max(maxStreak, currentStreak)
         } else {
@@ -533,9 +547,28 @@ function Analysis({ tasks, theme, toggleTheme }) {
           </svg>
         </div>
       </button>
+
+      {/* User Profile Section */}
+      <div className="user-profile">
+        <div className="user-info">
+          <div className="user-avatar">{currentUser?.name?.charAt(0).toUpperCase()}</div>
+          <span className="user-name">{currentUser?.name}</span>
+        </div>
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
+
+      {/* Back Button */}
       <div className="analysis-header">
         <button className="back-btn" onClick={() => navigate('/')}>
           ← Back to Tracker
+        </button>
+        <button className="compete-nav-btn" onClick={() => navigate('/compete')}>
+          🏆 Compete
+        </button>
+        <button className="compete-nav-btn" onClick={() => navigate('/rewards')}>
+          🎁 Rewards
         </button>
       </div>
       
@@ -822,6 +855,114 @@ function Analysis({ tasks, theme, toggleTheme }) {
           </div>
         </div>
 
+        {/* Consistency Heatmap Calendar */}
+        <div className="heatmap-section">
+          <h3>📅 {currentYear} Consistency Heatmap</h3>
+          <p className="heatmap-intro">Visual overview of your daily consistency across the entire year</p>
+          <div className="heatmap-container">
+            <div className="heatmap-grid">
+              <div className="heatmap-months-label">
+                {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, idx) => {
+                  const firstDayOfMonth = new Date(currentYear, idx, 1)
+                  const weekOffset = Math.floor((firstDayOfMonth - new Date(currentYear, 0, 1)) / (7 * 24 * 60 * 60 * 1000))
+                  return (
+                    <span 
+                      key={month} 
+                      style={{ 
+                        gridColumn: `${weekOffset + 1} / span 4`,
+                        display: weekOffset < 52 ? 'block' : 'none'
+                      }}
+                    >
+                      {month}
+                    </span>
+                  )
+                })}
+              </div>
+              <div className="heatmap-days-label">
+                <span>Mon</span>
+                <span></span>
+                <span>Wed</span>
+                <span></span>
+                <span>Fri</span>
+                <span></span>
+                <span>Sun</span>
+              </div>
+              <div className="heatmap-calendar-year">
+                {(() => {
+                  const yearDays = []
+                  const startDate = new Date(currentYear, 0, 1)
+                  const endDate = new Date(currentYear, 11, 31)
+                  const today = new Date(currentYear, currentMonth, currentDay)
+                  const totalDaysInYear = Math.floor((endDate - startDate) / (24 * 60 * 60 * 1000)) + 1
+                  
+                  for (let i = 0; i < totalDaysInYear; i++) {
+                    const date = new Date(currentYear, 0, i + 1)
+                    const month = date.getMonth()
+                    const dayOfMonth = date.getDate()
+                    const dayIndex = dayOfMonth - 1
+                    
+                    const isCurrentMonth = month === currentMonth
+                    const isTracked = isCurrentMonth && trackedDays.includes(dayIndex)
+                    const dayTasks = isTracked ? tasks.filter(task => isDayCompleted(task, dayIndex)).length : 0
+                    const dayPercentage = isTracked && totalTasks > 0 ? Math.round((dayTasks / totalTasks) * 100) : 0
+                    const isFuture = date > today
+                    
+                    const dayOfWeek = date.getDay()
+                    const weekNumber = Math.floor((date - startDate) / (7 * 24 * 60 * 60 * 1000))
+                    const dayPosition = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+                    
+                    let cellClass = 'heatmap-cell'
+                    if (isFuture) {
+                      cellClass += ' future'
+                    } else if (!isCurrentMonth) {
+                      cellClass += ' level-0'
+                    } else if (!isTracked) {
+                      cellClass += ' level-0'
+                    } else if (dayPercentage === 0) {
+                      cellClass += ' level-0'
+                    } else if (dayPercentage < 25) {
+                      cellClass += ' level-1'
+                    } else if (dayPercentage < 50) {
+                      cellClass += ' level-2'
+                    } else if (dayPercentage < 75) {
+                      cellClass += ' level-3'
+                    } else {
+                      cellClass += ' level-4'
+                    }
+                    
+                    yearDays.push(
+                      <div
+                        key={i}
+                        className={cellClass}
+                        style={{
+                          gridColumn: weekNumber + 1,
+                          gridRow: dayPosition + 1
+                        }}
+                        title={`${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}: ${isCurrentMonth ? `${dayPercentage}% (${dayTasks}/${totalTasks} tasks)` : isFuture ? 'Future date' : 'No data'}`}
+                      >
+                        <span className="heatmap-tooltip">
+                          {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}<br/>
+                          {isCurrentMonth ? `${dayPercentage}% (${dayTasks}/${totalTasks} tasks)` : isFuture ? 'Future date' : 'No data for this month'}
+                        </span>
+                      </div>
+                    )
+                  }
+                  return yearDays
+                })()}
+              </div>
+            </div>
+            <div className="heatmap-legend">
+              <span className="legend-label">Less</span>
+              <div className="legend-cell level-0"></div>
+              <div className="legend-cell level-1"></div>
+              <div className="legend-cell level-2"></div>
+              <div className="legend-cell level-3"></div>
+              <div className="legend-cell level-4"></div>
+              <span className="legend-label">More</span>
+            </div>
+          </div>
+        </div>
+
         {/* Improvement Suggestions - Minus Points */}
         {getImprovementSuggestions().length > 0 && (
           <div className="improvement-section">
@@ -880,14 +1021,14 @@ function Analysis({ tasks, theme, toggleTheme }) {
           <h3>📋 Individual Goal Analysis ({totalTrackedDays} tracked days)</h3>
           <div className="goals-detail-grid">
             {tasks.map((task, index) => {
-              const completedOnTrackedDays = trackedDays.filter(d => task.completedDays[d]).length
+              const completedOnTrackedDays = trackedDays.filter(d => isDayCompleted(task, d)).length
               const consistency = totalTrackedDays > 0 ? Math.round((completedOnTrackedDays / totalTrackedDays) * 100) : 0
               const goalReward = getReward(consistency)
               
               // Calculate current streak (based on tracked days)
               let currentStreak = 0
               for (let i = trackedDays.length - 1; i >= 0; i--) {
-                if (task.completedDays[trackedDays[i]]) currentStreak++
+                if (isDayCompleted(task, trackedDays[i])) currentStreak++
                 else break
               }
               
@@ -895,7 +1036,7 @@ function Analysis({ tasks, theme, toggleTheme }) {
               let longestStreak = 0
               let tempStreak = 0
               for (let i = 0; i < trackedDays.length; i++) {
-                if (task.completedDays[trackedDays[i]]) {
+                if (isDayCompleted(task, trackedDays[i])) {
                   tempStreak++
                   longestStreak = Math.max(longestStreak, tempStreak)
                 } else {
@@ -942,6 +1083,25 @@ function Analysis({ tasks, theme, toggleTheme }) {
           </div>
         </div>
       </div>
+
+      {/* Floating Chat Button */}
+      <button 
+        className="floating-chat-btn" 
+        onClick={() => setIsChatbotOpen(true)}
+        aria-label="Open AI Coach"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+        </svg>
+        <span className="chat-badge">AI</span>
+      </button>
+
+      {/* Chatbot */}
+      <Chatbot 
+        isOpen={isChatbotOpen} 
+        onClose={() => setIsChatbotOpen(false)}
+        currentUser={currentUser}
+      />
     </div>
   )
 }

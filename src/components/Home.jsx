@@ -1,4 +1,7 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts'
+import Chatbot from './Chatbot'
 
 const motivationalQuotes = [
   "💪 Every rep counts. Every day matters.",
@@ -10,8 +13,9 @@ const motivationalQuotes = [
   "🚀 Your body can do it. It's your mind you need to convince.",
 ]
 
-function Home({ tasks, setTasks, theme, toggleTheme }) {
+function Home({ tasks, setTasks, theme, toggleTheme, currentUser, handleLogout }) {
   const navigate = useNavigate()
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false)
   
   // Get current month info
   const now = new Date()
@@ -46,7 +50,7 @@ function Home({ tasks, setTasks, theme, toggleTheme }) {
     const newTask = {
       id: Date.now(),
       name: taskName.trim(),
-      completedDays: Array(daysInMonth).fill(false)
+      completedDates: {} // Store as { 'YYYY-MM-DD': true/false }
     }
     
     setTasks([...tasks, newTask])
@@ -55,9 +59,10 @@ function Home({ tasks, setTasks, theme, toggleTheme }) {
   const toggleDay = (taskId, dayIndex) => {
     setTasks(tasks.map(task => {
       if (task.id === taskId) {
-        const newCompletedDays = [...task.completedDays]
-        newCompletedDays[dayIndex] = !newCompletedDays[dayIndex]
-        return { ...task, completedDays: newCompletedDays }
+        const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(dayIndex + 1).padStart(2, '0')}`
+        const newCompletedDates = { ...task.completedDates }
+        newCompletedDates[dateStr] = !newCompletedDates[dateStr]
+        return { ...task, completedDates: newCompletedDates }
       }
       return task
     }))
@@ -67,8 +72,14 @@ function Home({ tasks, setTasks, theme, toggleTheme }) {
     setTasks(tasks.filter(task => task.id !== taskId))
   }
 
-  const calculateConsistency = (completedDays) => {
-    const completed = completedDays.filter(day => day).length
+  const calculateConsistency = (completedDates) => {
+    let completed = 0
+    for (let i = 0; i < daysInMonth; i++) {
+      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`
+      if (completedDates && completedDates[dateStr]) {
+        completed++
+      }
+    }
     return Math.round((completed / daysInMonth) * 100)
   }
 
@@ -95,6 +106,17 @@ function Home({ tasks, setTasks, theme, toggleTheme }) {
           </svg>
         </div>
       </button>
+
+      {/* User Profile Section */}
+      <div className="user-profile">
+        <div className="user-info">
+          <div className="user-avatar">{currentUser?.name?.charAt(0).toUpperCase()}</div>
+          <span className="user-name">{currentUser?.name}</span>
+        </div>
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
       
       {/* Professional Logo */}
       <div className="logo-container">
@@ -141,6 +163,24 @@ function Home({ tasks, setTasks, theme, toggleTheme }) {
           </div>
         </div>
       )}
+
+      {/* Quick Actions */}
+      <div className="quick-action-links">
+        <button className="action-link-btn" onClick={() => navigate('/compete')}>
+          <span className="action-icon">🏆</span>
+          <div className="action-content">
+            <span className="action-title">Compete</span>
+            <span className="action-desc">Challenge others</span>
+          </div>
+        </button>
+        <button className="action-link-btn" onClick={() => navigate('/analysis')}>
+          <span className="action-icon">📊</span>
+          <div className="action-content">
+            <span className="action-title">Analysis</span>
+            <span className="action-desc">View insights</span>
+          </div>
+        </button>
+      </div>
       
       {/* Add Task Section */}
       <form className="add-task-section" onSubmit={handleAddTask}>
@@ -172,32 +212,46 @@ function Home({ tasks, setTasks, theme, toggleTheme }) {
               </tr>
             </thead>
             <tbody>
-              {tasks.map(task => (
-                <tr key={task.id}>
-                  <td className="task-name">{task.name}</td>
-                  {days.map((day, index) => (
-                    <td key={day} className={`day-cell ${isWeekend(day) ? 'weekend' : ''} ${day === currentDay ? 'today' : ''}`}>
-                      <input
-                        type="checkbox"
-                        checked={task.completedDays[index]}
-                        onChange={() => toggleDay(task.id, index)}
-                        className="day-checkbox"
-                      />
+              {tasks.map(task => {
+                const getDateStr = (dayIndex) => `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(dayIndex + 1).padStart(2, '0')}`
+                
+                return (
+                  <tr key={task.id}>
+                    <td className="task-name">{task.name}</td>
+                    {days.map((day, index) => (
+                      <td key={day} className={`day-cell ${isWeekend(day) ? 'weekend' : ''} ${day === currentDay ? 'today' : ''}`}>
+                        <input
+                          type="checkbox"
+                          checked={task.completedDates && task.completedDates[getDateStr(index)] || false}
+                          onChange={() => toggleDay(task.id, index)}
+                          className="day-checkbox"
+                        />
+                      </td>
+                    ))}
+                    <td className="consistency-cell">
+                      <div className="consistency-wrapper">
+                        <span className="consistency-percentage">{calculateConsistency(task.completedDates)}%</span>
+                        <div className="consistency-bar-track">
+                          <div 
+                            className="consistency-bar" 
+                            style={{ 
+                              width: `${calculateConsistency(task.completedDates)}%`
+                            }}
+                          ></div>
+                        </div>
+                      </div>
                     </td>
-                  ))}
-                  <td className="consistency-cell">
-                    {calculateConsistency(task.completedDays)}%
-                  </td>
-                  <td className="action-cell">
-                    <button 
-                      onClick={() => deleteTask(task.id)}
-                      className="delete-btn"
-                    >
-                      ✕
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    <td className="action-cell">
+                      <button 
+                        onClick={() => deleteTask(task.id)}
+                        className="delete-btn"
+                      >
+                        ✕
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
