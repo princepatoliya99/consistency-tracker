@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { UserProgressProvider } from './context/UserProgressContext'
+import { UIProvider } from './context/UIContext'
 import Home from './components/Home'
 import Analysis from './components/Analysis'
 import CompetePage from './components/CompetePage'
 import RewardsPage from './components/RewardsPage'
+import UserProfilePage from './components/UserProfilePage'
 import Login from './components/Login'
 import Signup from './components/Signup'
 import './App.css'
@@ -50,16 +52,17 @@ function App() {
   }
 
   return (
-    <UserProgressProvider currentUser={currentUser}>
-      <Router>
-        <Routes>
-          <Route 
-            path="/login" 
-            element={
-              isAuthenticated ? <Navigate to="/" /> : 
-              <Login setIsAuthenticated={setIsAuthenticated} setCurrentUser={setCurrentUser} theme={theme} toggleTheme={toggleTheme} />
-            } 
-          />
+    <UIProvider>
+      <UserProgressProvider currentUser={currentUser}>
+        <Router>
+          <Routes>
+            <Route 
+              path="/login" 
+              element={
+                isAuthenticated ? <Navigate to="/" /> : 
+                <Login setIsAuthenticated={setIsAuthenticated} setCurrentUser={setCurrentUser} theme={theme} toggleTheme={toggleTheme} />
+              } 
+            />
           <Route 
             path="/signup" 
             element={
@@ -92,6 +95,14 @@ function App() {
             } 
           />
           <Route 
+            path="/profile" 
+            element={
+              isAuthenticated ? 
+              <UserProfilePage tasks={tasks} theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} /> :
+              <Navigate to="/login" />
+            } 
+          />
+          <Route 
             path="/rewards" 
             element={
               isAuthenticated ? 
@@ -102,6 +113,7 @@ function App() {
         </Routes>
       </Router>
     </UserProgressProvider>
+    </UIProvider>
   )
 }
 

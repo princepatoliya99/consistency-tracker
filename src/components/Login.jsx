@@ -14,17 +14,24 @@ function Login({ setIsAuthenticated, setCurrentUser, theme, toggleTheme }) {
     // Get users from localStorage
     const users = JSON.parse(localStorage.getItem('users') || '[]')
     
+    console.log('Attempting login with:', email)
+    console.log('Available users:', users)
+    
     // Find user with matching email and password
     const user = users.find(u => u.email === email && u.password === password)
+    
+    console.log('Found user:', user)
     
     if (user) {
       // Set authentication
       localStorage.setItem('currentUser', JSON.stringify(user))
       setCurrentUser(user)
       setIsAuthenticated(true)
+      console.log('Login successful, navigating to home')
       navigate('/')
     } else {
       setError('Invalid email or password')
+      console.log('Login failed: Invalid credentials')
     }
   }
 

@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts'
 import Chatbot from './Chatbot'
+import FocusModeView from './FocusModeView'
+import { useUI } from '../context/UIContext'
 
 const motivationalQuotes = [
   "💪 Every rep counts. Every day matters.",
@@ -16,6 +18,20 @@ const motivationalQuotes = [
 function Home({ tasks, setTasks, theme, toggleTheme, currentUser, handleLogout }) {
   const navigate = useNavigate()
   const [isChatbotOpen, setIsChatbotOpen] = useState(false)
+  const { focusMode, toggleFocusMode } = useUI()
+  
+  // If in focus mode, render FocusModeView instead
+  if (focusMode) {
+    return (
+      <div className="focus-mode-wrapper">
+        <FocusModeView 
+          tasks={tasks} 
+          setTasks={setTasks}
+          currentUser={currentUser}
+        />
+      </div>
+    )
+  }
   
   // Get current month info
   const now = new Date()
@@ -109,13 +125,23 @@ function Home({ tasks, setTasks, theme, toggleTheme, currentUser, handleLogout }
 
       {/* User Profile Section */}
       <div className="user-profile">
-        <div className="user-info">
+        <div className="user-info" onClick={() => navigate('/profile')} style={{ cursor: 'pointer' }} title="View Profile">
           <div className="user-avatar">{currentUser?.name?.charAt(0).toUpperCase()}</div>
           <span className="user-name">{currentUser?.name}</span>
         </div>
-        <button className="logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
+        <div className="header-actions">
+          <button className="focus-mode-toggle" onClick={toggleFocusMode} title="Enter Focus Mode (Press F)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="6"/>
+              <circle cx="12" cy="12" r="2" fill="currentColor"/>
+            </svg>
+            <span>Focus Mode</span>
+          </button>
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </div>
       
       {/* Professional Logo */}

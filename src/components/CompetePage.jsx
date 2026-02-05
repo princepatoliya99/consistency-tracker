@@ -164,7 +164,7 @@ function CompetePage({ theme, toggleTheme, currentUser, handleLogout }) {
 
       {/* User Profile Section */}
       <div className="user-profile">
-        <div className="user-info">
+        <div className="user-info" onClick={() => navigate('/profile')} style={{ cursor: 'pointer' }} title="View Profile">
           <div className="user-avatar">{currentUser?.name?.charAt(0).toUpperCase()}</div>
           <span className="user-name">{currentUser?.name}</span>
         </div>
