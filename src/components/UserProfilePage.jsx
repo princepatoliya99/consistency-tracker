@@ -86,19 +86,6 @@ function UserProfilePage({ theme, toggleTheme, currentUser, handleLogout, tasks 
 
   return (
     <div className="profile-page">
-      {/* Theme Toggle */}
-      <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
-        <div className="toggle-icons">
-          <svg className="toggle-icon sun-icon" viewBox="0 0 24 24" fill="currentColor">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-          <svg className="toggle-icon moon-icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </div>
-      </button>
-
       {/* Top Navigation Bar */}
       <div className="profile-top-nav">
         <button className="back-btn" onClick={() => navigate('/')}>
@@ -106,9 +93,6 @@ function UserProfilePage({ theme, toggleTheme, currentUser, handleLogout, tasks 
             <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
           Back to Dashboard
-        </button>
-        <button className="logout-btn" onClick={handleLogout}>
-          Logout
         </button>
       </div>
 
@@ -142,6 +126,14 @@ function UserProfilePage({ theme, toggleTheme, currentUser, handleLogout, tasks 
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                 </svg>
                 Edit Profile
+              </button>
+              <button className="logout-profile-btn" onClick={handleLogout}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Logout
               </button>
             </div>
           </div>

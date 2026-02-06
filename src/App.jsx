@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { UserProgressProvider } from './context/UserProgressContext'
 import { UIProvider } from './context/UIContext'
+import Layout from './components/Layout'
 import Home from './components/Home'
 import Analysis from './components/Analysis'
 import CompetePage from './components/CompetePage'
 import RewardsPage from './components/RewardsPage'
 import UserProfilePage from './components/UserProfilePage'
+import About from './components/About'
+import HelpCenter from './components/HelpCenter'
 import Login from './components/Login'
 import Signup from './components/Signup'
 import './App.css'
@@ -74,7 +77,9 @@ function App() {
             path="/" 
             element={
               isAuthenticated ? 
-              <Home tasks={tasks} setTasks={setTasks} theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} /> :
+              <Layout theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout}>
+                <Home tasks={tasks} setTasks={setTasks} theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} />
+              </Layout> :
               <Navigate to="/login" />
             } 
           />
@@ -82,7 +87,9 @@ function App() {
             path="/analysis" 
             element={
               isAuthenticated ? 
-              <Analysis tasks={tasks} theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} /> :
+              <Layout theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout}>
+                <Analysis tasks={tasks} theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} />
+              </Layout> :
               <Navigate to="/login" />
             } 
           />
@@ -90,7 +97,9 @@ function App() {
             path="/compete" 
             element={
               isAuthenticated ? 
-              <CompetePage theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} /> :
+              <Layout theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout}>
+                <CompetePage theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} />
+              </Layout> :
               <Navigate to="/login" />
             } 
           />
@@ -98,7 +107,9 @@ function App() {
             path="/profile" 
             element={
               isAuthenticated ? 
-              <UserProfilePage tasks={tasks} theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} /> :
+              <Layout theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout}>
+                <UserProfilePage tasks={tasks} theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} />
+              </Layout> :
               <Navigate to="/login" />
             } 
           />
@@ -106,8 +117,30 @@ function App() {
             path="/rewards" 
             element={
               isAuthenticated ? 
-              <RewardsPage theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} /> :
+              <Layout theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout}>
+                <RewardsPage theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} />
+              </Layout> :
               <Navigate to="/login" />
+            } 
+          />
+          <Route 
+            path="/about" 
+            element={
+              isAuthenticated ? 
+              <Layout theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout}>
+                <About theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} />
+              </Layout> :
+              <About theme={theme} toggleTheme={toggleTheme} currentUser={null} handleLogout={() => {}} />
+            } 
+          />
+          <Route 
+            path="/help" 
+            element={
+              isAuthenticated ? 
+              <Layout theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout}>
+                <HelpCenter theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} />
+              </Layout> :
+              <HelpCenter theme={theme} toggleTheme={toggleTheme} currentUser={null} handleLogout={() => {}} />
             } 
           />
         </Routes>

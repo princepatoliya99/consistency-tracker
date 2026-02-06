@@ -1,4 +1,6 @@
-# 📊 Consistency Tracker
+# 📊 Consistify
+
+*For the days no one sees.*
 
 A beautiful, modern habit tracking application to help you monitor daily goals, visualize progress with interactive charts, and boost your consistency with actionable insights.
 
