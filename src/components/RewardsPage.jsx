@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUserProgress } from '../context/UserProgressContext'
+import './RewardsPage.css'
 
 // Mock Rewards Shop Data
 const rewardsShopData = {
@@ -42,6 +43,21 @@ const achievementsData = [
   { id: 'ach_8', title: 'Unstoppable', icon: '⚡', description: 'Maintain 100-day streak', requirement: 100, type: 'streak' },
 ]
 
+const shopTabs = [
+  { key: 'themes', label: '🎨 Themes' },
+  { key: 'badges', label: '🏅 Badges' },
+  { key: 'streakFreeze', label: '🧊 Streak Freeze' },
+  { key: 'coupons', label: '🎫 Coupons' },
+]
+
+function getTimeAgo(date) {
+  const seconds = Math.floor((new Date() - date) / 1000)
+  if (seconds < 60) return 'Just now'
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`
+  return `${Math.floor(seconds / 86400)}d ago`
+}
+
 function RewardsPage({ theme, toggleTheme, currentUser, handleLogout }) {
   const navigate = useNavigate()
   const progress = useUserProgress()
@@ -76,239 +92,227 @@ function RewardsPage({ theme, toggleTheme, currentUser, handleLogout }) {
   }
 
   const isAchievementUnlocked = (achievement) => {
-    if (achievement.type === 'xp') {
-      return progress.xp >= achievement.requirement
-    } else if (achievement.type === 'streak') {
-      return progress.currentStreak >= achievement.requirement
-    }
+    if (achievement.type === 'xp') return progress.xp >= achievement.requirement
+    if (achievement.type === 'streak') return progress.currentStreak >= achievement.requirement
     return false
   }
 
   const currentRewards = rewardsShopData[activeTab] || []
 
   return (
-    <div className="app">
-
-      {/* Toast Notification */}
+    <div className="rw-page">
+      {/* Toast */}
       {showToast && (
-        <div className={`toast-notification ${toastType}`}>
-          <div className="toast-icon">
-            {toastType === 'success' ? '✓' : '⚠'}
-          </div>
+        <div className={`rw-toast ${toastType}`}>
+          <span>{toastType === 'success' ? '✓' : '⚠'}</span>
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Page Header */}
-      <div className="rewards-header">
-        <div className="rewards-header-content">
-          <div className="rewards-title-section">
-            <h1 className="rewards-title">
-              <span className="rewards-icon">🎁</span>
-              Rewards
-            </h1>
-            <p className="rewards-subtitle">Earn points and unlock rewards by staying consistent</p>
+      {/* Hero Header */}
+      <div className="rw-hero">
+        <div className="rw-hero-inner">
+          <div className="rw-hero-text">
+            <h1>🎁 Rewards</h1>
+            <p>Earn points and unlock rewards by staying consistent</p>
           </div>
-          <div className="rewards-actions">
-            <button className="rewards-action-btn secondary" onClick={() => navigate('/compete')}>
+          <div className="rw-hero-actions">
+            <button className="rw-btn rw-btn-ghost" onClick={() => navigate('/compete')}>
               ← Back to Compete
             </button>
-            <button className="rewards-action-btn primary" onClick={() => document.getElementById('shop-section').scrollIntoView({ behavior: 'smooth' })}>
+            <button
+              className="rw-btn rw-btn-primary"
+              onClick={() => document.getElementById('rw-shop').scrollIntoView({ behavior: 'smooth' })}
+            >
               🛍️ Browse Shop
             </button>
           </div>
         </div>
       </div>
 
-      {/* Wallet Summary Cards */}
-      <div className="wallet-summary">
-        <div className="wallet-card primary">
-          <div className="wallet-icon">⚡</div>
-          <div className="wallet-content">
-            <span className="wallet-label">Total XP</span>
-            <span className="wallet-value">{progress.xp.toLocaleString()}</span>
+      {/* Wallet Stats Row */}
+      <div className="rw-wallet-row">
+        <div className="rw-wallet-tile">
+          <div className="rw-wallet-icon blue">⚡</div>
+          <div className="rw-wallet-info">
+            <span className="rw-wallet-value">{progress.xp.toLocaleString()}</span>
+            <span className="rw-wallet-label">Total XP</span>
           </div>
         </div>
-
-        <div className="wallet-card">
-          <div className="wallet-icon">🪙</div>
-          <div className="wallet-content">
-            <span className="wallet-label">Coins Balance</span>
-            <span className="wallet-value">{progress.coins.toLocaleString()}</span>
+        <div className="rw-wallet-tile">
+          <div className="rw-wallet-icon amber">🪙</div>
+          <div className="rw-wallet-info">
+            <span className="rw-wallet-value">{progress.coins.toLocaleString()}</span>
+            <span className="rw-wallet-label">Coins Balance</span>
           </div>
         </div>
-
-        <div className="wallet-card">
-          <div className="wallet-icon">🎖️</div>
-          <div className="wallet-content">
-            <span className="wallet-label">Current Level</span>
-            <span className="wallet-value">Level {progress.level}</span>
+        <div className="rw-wallet-tile">
+          <div className="rw-wallet-icon purple">🎖️</div>
+          <div className="rw-wallet-info">
+            <span className="rw-wallet-value">Level {progress.level}</span>
+            <span className="rw-wallet-label">Current Level</span>
           </div>
         </div>
-
-        <div className="wallet-card">
-          <div className="wallet-icon">🔥</div>
-          <div className="wallet-content">
-            <span className="wallet-label">Streak</span>
-            <span className="wallet-value">{progress.currentStreak} days</span>
+        <div className="rw-wallet-tile">
+          <div className="rw-wallet-icon red">🔥</div>
+          <div className="rw-wallet-info">
+            <span className="rw-wallet-value">{progress.currentStreak}</span>
+            <span className="rw-wallet-label">Day Streak</span>
           </div>
         </div>
       </div>
 
       {/* Level Progress */}
-      <div className="level-progress-section">
-        <div className="level-progress-header">
+      <div className="rw-level">
+        <div className="rw-level-header">
           <div>
-            <h3 className="level-progress-title">Level {progress.level} Progress</h3>
-            <p className="level-progress-subtitle">
+            <h3 className="rw-level-title">Level {progress.level} Progress</h3>
+            <p className="rw-level-sub">
               {progress.xp.toLocaleString()} / {progress.nextLevelXP.toLocaleString()} XP to Level {progress.level + 1}
             </p>
           </div>
-          <span className="level-progress-percent">{Math.round(progress.levelProgress)}%</span>
+          <span className="rw-level-pct">{Math.round(progress.levelProgress)}%</span>
         </div>
-        <div className="level-progress-bar">
-          <div className="level-progress-fill" style={{ width: `${progress.levelProgress}%` }}></div>
+        <div className="rw-level-bar">
+          <div className="rw-level-fill" style={{ width: `${progress.levelProgress}%` }} />
         </div>
       </div>
 
       {/* Rewards Shop */}
-      <div className="rewards-shop-section" id="shop-section">
-        <h2 className="section-title">Rewards Shop</h2>
-        
-        {/* Shop Tabs */}
-        <div className="shop-tabs">
-          <button 
-            className={`shop-tab ${activeTab === 'themes' ? 'active' : ''}`}
-            onClick={() => setActiveTab('themes')}
-          >
-            🎨 Themes
-          </button>
-          <button 
-            className={`shop-tab ${activeTab === 'badges' ? 'active' : ''}`}
-            onClick={() => setActiveTab('badges')}
-          >
-            🏅 Badges
-          </button>
-          <button 
-            className={`shop-tab ${activeTab === 'streakFreeze' ? 'active' : ''}`}
-            onClick={() => setActiveTab('streakFreeze')}
-          >
-            🧊 Streak Freeze
-          </button>
-          <button 
-            className={`shop-tab ${activeTab === 'coupons' ? 'active' : ''}`}
-            onClick={() => setActiveTab('coupons')}
-          >
-            🎫 Coupons
-          </button>
+      <div className="rw-card" id="rw-shop">
+        <div className="rw-card-header">
+          <h2 className="rw-card-title">Rewards Shop</h2>
         </div>
 
-        {/* Shop Items Grid */}
-        <div className="shop-items-grid">
-          {currentRewards.map((reward) => {
-            const isOwned = progress.hasReward(reward.id)
-            const canAfford = progress.coins >= reward.cost
-
-            return (
-              <div key={reward.id} className={`shop-item-card ${isOwned ? 'owned' : ''}`}>
-                <div className="shop-item-icon">{reward.icon}</div>
-                <h3 className="shop-item-title">{reward.title}</h3>
-                <p className="shop-item-description">{reward.description}</p>
-                <div className="shop-item-footer">
-                  <div className="shop-item-cost">
-                    <span className="cost-icon">🪙</span>
-                    <span className="cost-value">{reward.cost}</span>
-                  </div>
-                  <button 
-                    className={`shop-item-btn ${isOwned ? 'owned' : canAfford ? 'available' : 'disabled'}`}
-                    onClick={() => !isOwned && canAfford && handleRedeem(reward)}
-                    disabled={isOwned || !canAfford}
-                  >
-                    {isOwned ? 'Owned ✓' : canAfford ? 'Redeem' : 'Insufficient'}
-                  </button>
-                </div>
-                {isOwned && <div className="owned-badge">✓ Owned</div>}
-              </div>
-            )
-          })}
+        {/* Tabs */}
+        <div className="rw-tabs">
+          {shopTabs.map(t => (
+            <button
+              key={t.key}
+              className={`rw-tab ${activeTab === t.key ? 'active' : ''}`}
+              onClick={() => setActiveTab(t.key)}
+            >
+              {t.label}
+            </button>
+          ))}
         </div>
-      </div>
 
-      {/* Achievements Section */}
-      <div className="achievements-section">
-        <h2 className="section-title">Achievements</h2>
-        <div className="achievements-grid">
-          {achievementsData.map((achievement) => {
-            const progressPercent = getAchievementProgress(achievement)
-            const isUnlocked = isAchievementUnlocked(achievement)
+        {/* Items */}
+        <div className="rw-card-body">
+          <div className="rw-shop-grid">
+            {currentRewards.map((reward) => {
+              const isOwned = progress.hasReward(reward.id)
+              const canAfford = progress.coins >= reward.cost
 
-            return (
-              <div key={achievement.id} className={`achievement-card ${isUnlocked ? 'unlocked' : ''}`}>
-                <div className="achievement-icon-container">
-                  <span className="achievement-icon">{achievement.icon}</span>
-                  {isUnlocked && <div className="achievement-check">✓</div>}
-                </div>
-                <div className="achievement-content">
-                  <h3 className="achievement-title">{achievement.title}</h3>
-                  <p className="achievement-description">{achievement.description}</p>
-                  <div className="achievement-progress">
-                    <div className="achievement-progress-bar">
-                      <div 
-                        className="achievement-progress-fill" 
-                        style={{ width: `${progressPercent}%` }}
-                      ></div>
+              return (
+                <div key={reward.id} className={`rw-shop-item ${isOwned ? 'owned' : ''}`}>
+                  {isOwned && <span className="rw-owned-badge">Owned</span>}
+                  <div className="rw-shop-item-top">
+                    <div className="rw-shop-icon">{reward.icon}</div>
+                    <div className="rw-shop-info">
+                      <h3 className="rw-shop-name">{reward.title}</h3>
+                      <p className="rw-shop-desc">{reward.description}</p>
                     </div>
-                    <span className="achievement-progress-text">
-                      {isUnlocked ? 'Completed!' : `${Math.round(progressPercent)}%`}
-                    </span>
+                  </div>
+                  <div className="rw-shop-footer">
+                    <div className="rw-cost">
+                      <span className="rw-cost-icon">🪙</span>
+                      <span>{reward.cost}</span>
+                    </div>
+                    <button
+                      className={`rw-redeem-btn ${isOwned ? 'owned' : canAfford ? 'available' : 'disabled'}`}
+                      onClick={() => !isOwned && canAfford && handleRedeem(reward)}
+                      disabled={isOwned || !canAfford}
+                    >
+                      {isOwned ? '✓ Owned' : canAfford ? 'Redeem' : 'Insufficient'}
+                    </button>
                   </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
         </div>
       </div>
 
-      {/* Activity Timeline */}
-      <div className="activity-timeline-section">
-        <h2 className="section-title">Activity Timeline</h2>
-        <div className="timeline-container">
-          {progress.activityLog.slice(0, 10).map((activity) => {
-            const date = new Date(activity.timestamp)
-            const timeAgo = getTimeAgo(date)
+      {/* Achievements + Timeline side-by-side on large screens */}
+      <div className="rw-layout">
+        {/* Achievements */}
+        <div className="rw-card" style={{ marginBottom: 0 }}>
+          <div className="rw-card-header">
+            <h2 className="rw-card-title">Achievements</h2>
+          </div>
+          <div className="rw-card-body">
+            <div className="rw-achievements-grid">
+              {achievementsData.map((ach) => {
+                const pct = getAchievementProgress(ach)
+                const done = isAchievementUnlocked(ach)
 
-            return (
-              <div key={activity.id} className="timeline-item">
-                <div className={`timeline-icon ${activity.type}`}>
-                  {activity.type === 'xp_earned' && '⚡'}
-                  {activity.type === 'reward_redeemed' && '🎁'}
-                  {activity.type === 'badge_unlocked' && '🏅'}
-                </div>
-                <div className="timeline-content">
-                  <p className="timeline-description">{activity.description}</p>
-                  <span className="timeline-time">{timeAgo}</span>
-                </div>
-                {activity.amount && (
-                  <div className="timeline-amount">
-                    +{activity.amount} {activity.type === 'xp_earned' ? 'XP' : 'coins'}
+                return (
+                  <div key={ach.id} className={`rw-achievement ${done ? 'unlocked' : ''}`}>
+                    <div className="rw-ach-icon-wrap">
+                      <div className="rw-ach-icon">{ach.icon}</div>
+                      {done && <div className="rw-ach-check">✓</div>}
+                    </div>
+                    <div className="rw-ach-content">
+                      <h3 className="rw-ach-title">{ach.title}</h3>
+                      <p className="rw-ach-desc">{ach.description}</p>
+                      <div className="rw-ach-progress">
+                        <div className="rw-ach-bar">
+                          <div
+                            className={`rw-ach-fill ${done ? 'done' : 'progress'}`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className={`rw-ach-pct ${done ? 'done' : ''}`}>
+                          {done ? 'Done!' : `${Math.round(pct)}%`}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                )}
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Activity Timeline */}
+        <div className="rw-card" style={{ marginBottom: 0 }}>
+          <div className="rw-card-header">
+            <h2 className="rw-card-title">Activity Timeline</h2>
+          </div>
+          <div className="rw-card-body">
+            {progress.activityLog.length > 0 ? (
+              <div className="rw-timeline">
+                {progress.activityLog.slice(0, 10).map((activity) => {
+                  const timeAgo = getTimeAgo(new Date(activity.timestamp))
+                  return (
+                    <div key={activity.id} className="rw-timeline-item">
+                      <div className={`rw-tl-icon ${activity.type === 'xp_earned' ? 'xp' : activity.type === 'reward_redeemed' ? 'reward' : 'badge'}`}>
+                        {activity.type === 'xp_earned' && '⚡'}
+                        {activity.type === 'reward_redeemed' && '🎁'}
+                        {activity.type === 'badge_unlocked' && '🏅'}
+                      </div>
+                      <div className="rw-tl-content">
+                        <p className="rw-tl-desc">{activity.description}</p>
+                        <span className="rw-tl-time">{timeAgo}</span>
+                      </div>
+                      {activity.amount && (
+                        <span className={`rw-tl-amount ${activity.type === 'xp_earned' ? 'xp' : 'coins'}`}>
+                          +{activity.amount} {activity.type === 'xp_earned' ? 'XP' : 'coins'}
+                        </span>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
-            )
-          })}
+            ) : (
+              <div className="rw-empty">No activity yet. Start earning rewards!</div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   )
-}
-
-function getTimeAgo(date) {
-  const seconds = Math.floor((new Date() - date) / 1000)
-  
-  if (seconds < 60) return 'Just now'
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`
-  return `${Math.floor(seconds / 86400)}d ago`
 }
 
 export default RewardsPage

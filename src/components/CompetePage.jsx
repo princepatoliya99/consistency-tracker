@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LineChart, Line, ResponsiveContainer } from 'recharts'
 import { useUserProgress } from '../context/UserProgressContext'
+import './CompetePage.css'
 
 // Mock Data
 const mockLeaderboardData = {
@@ -124,6 +125,13 @@ const weeklyProgressData = [
   { day: 'Sun', progress: 94 }
 ]
 
+const rankClass = (rank) => {
+  if (rank === 1) return 'gold'
+  if (rank === 2) return 'silver'
+  if (rank === 3) return 'bronze'
+  return ''
+}
+
 function CompetePage({ theme, toggleTheme, currentUser, handleLogout }) {
   const navigate = useNavigate()
   const progress = useUserProgress()
@@ -143,39 +151,42 @@ function CompetePage({ theme, toggleTheme, currentUser, handleLogout }) {
 
   const leaderboardData = mockLeaderboardData[activeTab] || mockLeaderboardData.daily
 
-  // Filter leaderboard based on search
   const filteredLeaderboard = leaderboardData.filter(user =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
+  const tabs = [
+    { key: 'daily', label: 'Daily' },
+    { key: 'weekly', label: 'Weekly' },
+    { key: 'monthly', label: 'Monthly' },
+    { key: 'alltime', label: 'All Time' },
+  ]
+
   return (
-    <div className="app">
-      {/* Claim XP Toast */}
+    <div className="cp-page">
+      {/* Toast */}
       {showClaimToast && (
-        <div className="toast-notification success claim-toast">
-          <div className="toast-icon">✓</div>
+        <div className="cp-toast">
+          <span>✓</span>
           <span>Claimed +{claimAmount} XP!</span>
         </div>
       )}
 
-      {/* Page Header */}
-      <div className="compete-header">
-        <div className="compete-header-content">
-          <div className="compete-title-section">
-            <h1 className="compete-title">
-              <span className="compete-icon">🏆</span>
-              Compete
-            </h1>
-            <p className="compete-subtitle">Track your consistency and compete with others</p>
+      {/* Hero Header */}
+      <div className="cp-hero">
+        <div className="cp-hero-inner">
+          <div className="cp-hero-text">
+            <h1>🏆 Compete</h1>
+            <p>Track your consistency and compete with others</p>
           </div>
-          <div className="compete-actions">
-            <button className="compete-action-btn primary">
+          <div className="cp-hero-actions">
+            <button className="cp-btn cp-btn-primary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 5v14M5 12h14"/>
               </svg>
               Create Challenge
             </button>
-            <button className="compete-action-btn secondary">
+            <button className="cp-btn cp-btn-ghost">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                 <circle cx="8.5" cy="7" r="4"/>
@@ -187,275 +198,229 @@ function CompetePage({ theme, toggleTheme, currentUser, handleLogout }) {
         </div>
       </div>
 
-      <div className="compete-content">
-        {/* Main Content Area */}
-        <div className="compete-main">
-          {/* Leaderboard Section */}
-          <div className="compete-section">
-            <div className="section-header">
-              <h2 className="section-title">Leaderboard</h2>
-              
-              {/* Tabs */}
-              <div className="compete-tabs">
-                <button 
-                  className={`compete-tab ${activeTab === 'daily' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('daily')}
+      {/* Stats Row */}
+      <div className="cp-stats-row">
+        <div className="cp-stat-tile">
+          <div className="cp-stat-icon purple">🏆</div>
+          <div className="cp-stat-info">
+            <span className="cp-stat-value">#{progress.globalRank}</span>
+            <span className="cp-stat-label">Global Rank</span>
+          </div>
+        </div>
+        <div className="cp-stat-tile">
+          <div className="cp-stat-icon amber">🔥</div>
+          <div className="cp-stat-info">
+            <span className="cp-stat-value">{progress.currentStreak}</span>
+            <span className="cp-stat-label">Day Streak</span>
+          </div>
+        </div>
+        <div className="cp-stat-tile">
+          <div className="cp-stat-icon blue">⚡</div>
+          <div className="cp-stat-info">
+            <span className="cp-stat-value">{progress.xp.toLocaleString()}</span>
+            <span className="cp-stat-label">Total XP</span>
+          </div>
+        </div>
+        <div className="cp-stat-tile">
+          <div className="cp-stat-icon green">📊</div>
+          <div className="cp-stat-info">
+            <span className="cp-stat-value">94%</span>
+            <span className="cp-stat-label">Consistency</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Layout */}
+      <div className="cp-layout">
+        <div className="cp-main">
+          {/* Leaderboard */}
+          <div className="cp-card">
+            <div className="cp-card-header">
+              <h2 className="cp-card-title">Leaderboard</h2>
+            </div>
+
+            {/* Tabs */}
+            <div className="cp-tabs">
+              {tabs.map(t => (
+                <button
+                  key={t.key}
+                  className={`cp-tab ${activeTab === t.key ? 'active' : ''}`}
+                  onClick={() => setActiveTab(t.key)}
                 >
-                  Daily
+                  {t.label}
                 </button>
-                <button 
-                  className={`compete-tab ${activeTab === 'weekly' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('weekly')}
-                >
-                  Weekly
-                </button>
-                <button 
-                  className={`compete-tab ${activeTab === 'monthly' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('monthly')}
-                >
-                  Monthly
-                </button>
-                <button 
-                  className={`compete-tab ${activeTab === 'alltime' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('alltime')}
-                >
-                  All Time
-                </button>
-              </div>
+              ))}
             </div>
 
             {/* Filters */}
-            <div className="compete-filters">
-              <div className="filter-chips">
-                <button 
-                  className={`filter-chip ${filterScope === 'global' ? 'active' : ''}`}
-                  onClick={() => setFilterScope('global')}
-                >
-                  🌍 Global
-                </button>
-                <button 
-                  className={`filter-chip ${filterScope === 'friends' ? 'active' : ''}`}
-                  onClick={() => setFilterScope('friends')}
-                >
-                  👥 Friends
-                </button>
-                <select 
-                  className="filter-select"
-                  value={filterCategory}
-                  onChange={(e) => setFilterCategory(e.target.value)}
-                >
-                  <option value="all">All Categories</option>
-                  <option value="study">📚 Study</option>
-                  <option value="fitness">💪 Fitness</option>
-                  <option value="work">💼 Work</option>
-                </select>
-              </div>
-              
-              <div className="search-box">
-                <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="cp-filters">
+              <button
+                className={`cp-filter-btn ${filterScope === 'global' ? 'active' : ''}`}
+                onClick={() => setFilterScope('global')}
+              >
+                🌍 Global
+              </button>
+              <button
+                className={`cp-filter-btn ${filterScope === 'friends' ? 'active' : ''}`}
+                onClick={() => setFilterScope('friends')}
+              >
+                👥 Friends
+              </button>
+              <select
+                className="cp-filter-select"
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+              >
+                <option value="all">All Categories</option>
+                <option value="study">📚 Study</option>
+                <option value="fitness">💪 Fitness</option>
+                <option value="work">💼 Work</option>
+              </select>
+
+              <div className="cp-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="11" cy="11" r="8"/>
                   <path d="m21 21-4.35-4.35"/>
                 </svg>
                 <input
                   type="text"
-                  placeholder="Search username..."
+                  placeholder="Search users..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
                 />
               </div>
             </div>
 
-            {/* Leaderboard Table */}
-            <div className="leaderboard-container">
-              <div className="leaderboard-table">
-                <div className="leaderboard-header">
-                  <div className="leaderboard-cell rank-cell">Rank</div>
-                  <div className="leaderboard-cell user-cell">User</div>
-                  <div className="leaderboard-cell">Streak</div>
-                  <div className="leaderboard-cell">XP</div>
-                  <div className="leaderboard-cell">Consistency</div>
-                  <div className="leaderboard-cell badge-cell">Badge</div>
-                </div>
-                
-                {filteredLeaderboard.map((user) => (
-                  <div 
-                    key={user.id} 
-                    className={`leaderboard-row ${user.isCurrentUser ? 'current-user' : ''}`}
-                  >
-                    <div className="leaderboard-cell rank-cell">
-                      <div className={`rank-badge ${user.rank <= 3 ? `rank-${user.rank}` : ''}`}>
-                        {user.rank <= 3 ? (
-                          <>
-                            {user.rank === 1 && '🥇'}
-                            {user.rank === 2 && '🥈'}
-                            {user.rank === 3 && '🥉'}
-                          </>
-                        ) : (
-                          user.rank
-                        )}
-                      </div>
-                    </div>
-                    
-                    <div className="leaderboard-cell user-cell">
-                      <div className="user-avatar-small">{user.avatar}</div>
-                      <span className="username">{user.username}</span>
-                      {user.isCurrentUser && <span className="you-badge">You</span>}
-                    </div>
-                    
-                    <div className="leaderboard-cell">
-                      <span className="streak-text">
-                        🔥 {user.streak} days
-                      </span>
-                    </div>
-                    
-                    <div className="leaderboard-cell">
-                      <span className="xp-text">{user.xp.toLocaleString()} XP</span>
-                    </div>
-                    
-                    <div className="leaderboard-cell">
-                      <div className="consistency-indicator">
-                        <div className="consistency-bar-mini">
-                          <div 
-                            className="consistency-fill-mini" 
-                            style={{ width: `${user.consistency}%` }}
-                          ></div>
+            {/* Table */}
+            <div className="cp-table-wrap">
+              <table className="cp-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>User</th>
+                    <th>Streak</th>
+                    <th>XP</th>
+                    <th>Consistency</th>
+                    <th style={{ textAlign: 'right' }}>Badge</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredLeaderboard.map((user) => (
+                    <tr key={user.id} className={user.isCurrentUser ? 'cp-me' : ''}>
+                      <td>
+                        <span className={`cp-rank ${rankClass(user.rank)}`}>
+                          {user.rank <= 3 ? (user.rank === 1 ? '🥇' : user.rank === 2 ? '🥈' : '🥉') : user.rank}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="cp-user">
+                          <div className="cp-avatar">{user.avatar}</div>
+                          <span className="cp-username">{user.username}</span>
+                          {user.isCurrentUser && <span className="cp-you-tag">You</span>}
                         </div>
-                        <span className="consistency-text">{user.consistency}%</span>
+                      </td>
+                      <td>
+                        <span className="cp-streak">🔥 {user.streak}d</span>
+                      </td>
+                      <td>
+                        <span className="cp-xp">{user.xp.toLocaleString()}</span>
+                      </td>
+                      <td>
+                        <div className="cp-consistency">
+                          <div className="cp-bar-track">
+                            <div className="cp-bar-fill" style={{ width: `${user.consistency}%` }} />
+                          </div>
+                          <span className="cp-bar-label">{user.consistency}%</span>
+                        </div>
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <span className="cp-badge-label">{user.badge}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Challenges */}
+          <div className="cp-card" style={{ marginTop: '1.5rem' }}>
+            <div className="cp-card-header">
+              <h2 className="cp-card-title">Active Challenges</h2>
+              <button className="cp-view-all">View All →</button>
+            </div>
+            <div className="cp-card-body">
+              <div className="cp-challenges-grid">
+                {mockChallenges.map((c) => (
+                  <div key={c.id} className="cp-challenge">
+                    {/* Top: tags + reward */}
+                    <div className="cp-challenge-top">
+                      <div className="cp-tags">
+                        {c.tags.map((tag, i) => (
+                          <span key={i} className={`cp-tag ${tag.toLowerCase()}`}>{tag}</span>
+                        ))}
+                      </div>
+                      <div className="cp-reward">
+                        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <span>{c.reward}</span>
                       </div>
                     </div>
-                    
-                    <div className="leaderboard-cell badge-cell">
-                      <span className="badge-label">{user.badge}</span>
+
+                    <h3 className="cp-challenge-title">{c.title}</h3>
+                    <p className="cp-challenge-desc">{c.description}</p>
+
+                    {/* Progress (only for joined) */}
+                    {c.status === 'joined' && (
+                      <div className="cp-challenge-progress">
+                        <div className="cp-challenge-progress-header">
+                          <span>Progress</span>
+                          <span>{c.progress}%</span>
+                        </div>
+                        <div className="cp-progress-track">
+                          <div className="cp-progress-fill" style={{ width: `${c.progress}%` }} />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Footer */}
+                    <div className="cp-challenge-footer">
+                      <div className="cp-challenge-meta">
+                        <div className="cp-participants">
+                          <div className="cp-mini-avatars">
+                            {c.participants.slice(0, 3).map((a, i) => (
+                              <div key={i} className="cp-mini-avatar">{a}</div>
+                            ))}
+                            {c.participantCount > 3 && (
+                              <div className="cp-mini-avatar more">+{c.participantCount - 3}</div>
+                            )}
+                          </div>
+                          <span className="cp-participants-text">{c.participantCount} joined</span>
+                        </div>
+                        <div className="cp-dates">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <path d="M16 2v4M8 2v4M3 10h18"/>
+                          </svg>
+                          <span>{c.startDate} — {c.endDate}</span>
+                        </div>
+                      </div>
+                      <button className={`cp-join-btn ${c.status === 'joined' ? 'joined' : 'available'}`}>
+                        {c.status === 'joined' ? '✓ Joined' : 'Join'}
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-
-          {/* Challenges Section */}
-          <div className="compete-section">
-            <div className="section-header">
-              <h2 className="section-title">Active Challenges</h2>
-              <button className="view-all-btn">View All →</button>
-            </div>
-
-            <div className="challenges-grid">
-              {mockChallenges.map((challenge) => (
-                <div key={challenge.id} className="challenge-card">
-                  <div className="challenge-header">
-                    <h3 className="challenge-title">{challenge.title}</h3>
-                    <div className="challenge-tags">
-                      {challenge.tags.map((tag, index) => (
-                        <span key={index} className={`challenge-tag ${tag.toLowerCase()}`}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <p className="challenge-description">{challenge.description}</p>
-                  
-                  <div className="challenge-participants">
-                    <div className="participants-avatars">
-                      {challenge.participants.map((avatar, index) => (
-                        <div key={index} className="participant-avatar">
-                          {avatar}
-                        </div>
-                      ))}
-                      {challenge.participantCount > challenge.participants.length && (
-                        <div className="participant-avatar more">
-                          +{challenge.participantCount - challenge.participants.length}
-                        </div>
-                      )}
-                    </div>
-                    <span className="participants-count">
-                      {challenge.participantCount} participants
-                    </span>
-                  </div>
-                  
-                  {challenge.status === 'joined' && (
-                    <div className="challenge-progress">
-                      <div className="progress-info">
-                        <span className="progress-label">Progress</span>
-                        <span className="progress-value">{challenge.progress}%</span>
-                      </div>
-                      <div className="progress-bar-challenge">
-                        <div 
-                          className="progress-fill-challenge" 
-                          style={{ width: `${challenge.progress}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="challenge-footer">
-                    <div className="challenge-dates">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                        <path d="M16 2v4M8 2v4M3 10h18"/>
-                      </svg>
-                      <span>{challenge.startDate} - {challenge.endDate}</span>
-                    </div>
-                    <button 
-                      className={`challenge-action-btn ${challenge.status}`}
-                    >
-                      {challenge.status === 'joined' ? 'Joined ✓' : 'Join Challenge'}
-                    </button>
-                  </div>
-                  
-                  <div className="challenge-reward">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                    <span>{challenge.reward}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
-        {/* Side Stats Panel */}
-        <div className="compete-sidebar">
-          <div className="stats-panel">
-            <h3 className="stats-panel-title">Your Stats</h3>
-            
-            <div className="stat-card highlight">
-              <div className="stat-icon">🏆</div>
-              <div className="stat-content">
-                <span className="stat-label">Global Rank</span>
-                <span className="stat-value">#{progress.globalRank}</span>
-              </div>
-            </div>
-            
-            <div className="stat-card">
-              <div className="stat-icon">🔥</div>
-              <div className="stat-content">
-                <span className="stat-label">Current Streak</span>
-                <span className="stat-value">{progress.currentStreak} days</span>
-              </div>
-            </div>
-            
-            <div className="stat-card">
-              <div className="stat-icon">⚡</div>
-              <div className="stat-content">
-                <span className="stat-label">Total XP</span>
-                <span className="stat-value">{progress.xp.toLocaleString()}</span>
-              </div>
-            </div>
-            
-            <div className="stat-card">
-              <div className="stat-icon">📊</div>
-              <div className="stat-content">
-                <span className="stat-label">Consistency</span>
-                <span className="stat-value">94%</span>
-              </div>
-            </div>
-
-            {/* Claim XP Button */}
-            <button className="claim-xp-btn" onClick={handleClaimXP}>
+        {/* Sidebar */}
+        <div className="cp-sidebar">
+          {/* Claim XP */}
+          <div className="cp-side-card">
+            <h4 className="cp-side-card-title">Daily Bonus</h4>
+            <button className="cp-claim-btn" onClick={handleClaimXP}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2L2 7l10 5 10-5-10-5z"/>
                 <path d="M2 17l10 5 10-5"/>
@@ -463,35 +428,39 @@ function CompetePage({ theme, toggleTheme, currentUser, handleLogout }) {
               </svg>
               Claim XP Bonus
             </button>
+          </div>
 
-            <div className="weekly-progress-chart">
-              <h4 className="chart-title">Weekly Progress</h4>
-              <ResponsiveContainer width="100%" height={120}>
+          {/* Weekly Progress */}
+          <div className="cp-side-card">
+            <h4 className="cp-side-card-title">Weekly Progress</h4>
+            <div className="cp-chart-wrap">
+              <ResponsiveContainer width="100%" height={100}>
                 <LineChart data={weeklyProgressData}>
-                  <Line 
-                    type="monotone" 
-                    dataKey="progress" 
-                    stroke="#3b82f6" 
-                    strokeWidth={3}
-                    dot={{ fill: '#3b82f6', r: 4 }}
+                  <Line
+                    type="monotone"
+                    dataKey="progress"
+                    stroke="var(--accent-primary, #3b82f6)"
+                    strokeWidth={2.5}
+                    dot={{ fill: 'var(--accent-primary, #3b82f6)', r: 3, strokeWidth: 0 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
-              <div className="chart-labels">
-                {weeklyProgressData.map((data, index) => (
-                  <span key={index} className="chart-label">{data.day}</span>
+              <div className="cp-chart-labels">
+                {weeklyProgressData.map((d, i) => (
+                  <span key={i} className="cp-chart-label">{d.day}</span>
                 ))}
               </div>
             </div>
+          </div>
 
-            <div className="achievements-preview">
-              <h4 className="achievements-title">Recent Achievements</h4>
-              <div className="achievement-badges">
-                <div className="achievement-badge gold">🏆</div>
-                <div className="achievement-badge silver">🥈</div>
-                <div className="achievement-badge bronze">🥉</div>
-                <div className="achievement-badge">⭐</div>
-              </div>
+          {/* Achievements */}
+          <div className="cp-side-card">
+            <h4 className="cp-side-card-title">Achievements</h4>
+            <div className="cp-achievements">
+              <div className="cp-ach gold">🏆</div>
+              <div className="cp-ach silver">🥈</div>
+              <div className="cp-ach bronze">🥉</div>
+              <div className="cp-ach">⭐</div>
             </div>
           </div>
         </div>

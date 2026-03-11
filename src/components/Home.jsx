@@ -4,6 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell }
 import Chatbot from './Chatbot'
 import FocusModeView from './FocusModeView'
 import { useUI } from '../context/UIContext'
+import './Home.css'
 
 const motivationalQuotes = [
   "💪 Every rep counts. Every day matters.",
@@ -110,10 +111,10 @@ function Home({ tasks, setTasks, theme, toggleTheme, currentUser, handleLogout }
   }
 
   return (
-    <div className="app">
-      {/* Professional Logo */}
-      <div className="logo-container">
-        <div className="logo-icon">
+    <div className="hm-page">
+      {/* Brand Header */}
+      <div className="hm-brand">
+        <div className="hm-brand-icon">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="48" height="48" rx="12" fill="url(#logoGradient)"/>
             <path d="M12 32V28" stroke="white" strokeWidth="3" strokeLinecap="round"/>
@@ -131,142 +132,152 @@ function Home({ tasks, setTasks, theme, toggleTheme, currentUser, handleLogout }
             </defs>
           </svg>
         </div>
-        <div className="logo-text">
-          <h1><span className="highlight">Consistify</span></h1>
-          <p className="tagline">For the days no one sees.</p>
-          <p className="sub-tagline">Track • Improve • Conquer</p>
+        <div className="hm-brand-text">
+          <h1><span className="hm-highlight">Consistify</span></h1>
+          <p className="hm-tagline">For the days no one sees.</p>
+          <p className="hm-sub-tagline">Track • Improve • Conquer</p>
         </div>
       </div>
       
-      <p className="motivation-quote">{quote}</p>
+      <p className="hm-quote">{quote}</p>
 
-      {/* Stats Bar */}
+      {/* Stats Row */}
       {tasks.length > 0 && (
-        <div className="stats-bar">
-          <div className="stat-item">
-            <div className="stat-number">{totalTasks}</div>
-            <div className="stat-label">Active Goals</div>
+        <div className="hm-stats-row">
+          <div className="hm-stat-tile">
+            <div className="hm-stat-info">
+              <div className="hm-stat-num">{totalTasks}</div>
+              <div className="hm-stat-lbl">Active Goals</div>
+            </div>
           </div>
-          <div className="stat-item">
-            <div className="stat-number">{currentDay}</div>
-            <div className="stat-label">Today's Date</div>
+          <div className="hm-stat-tile">
+            <div className="hm-stat-info">
+              <div className="hm-stat-num">{currentDay}</div>
+              <div className="hm-stat-lbl">Today's Date</div>
+            </div>
           </div>
-          <div className="stat-item">
-            <div className="stat-number">{daysInMonth - currentDay}</div>
-            <div className="stat-label">Days Remaining</div>
+          <div className="hm-stat-tile">
+            <div className="hm-stat-info">
+              <div className="hm-stat-num">{daysInMonth - currentDay}</div>
+              <div className="hm-stat-lbl">Days Remaining</div>
+            </div>
           </div>
         </div>
       )}
 
       {/* Quick Actions */}
-      <div className="quick-action-links">
-        <button className="action-link-btn" onClick={() => navigate('/compete')}>
-          <span className="action-icon">🏆</span>
-          <div className="action-content">
-            <span className="action-title">Compete</span>
-            <span className="action-desc">Challenge others</span>
+      <div className="hm-quick-actions">
+        <button className="hm-action-card" onClick={() => navigate('/compete')}>
+          <span className="hm-action-icon">🏆</span>
+          <div className="hm-action-info">
+            <span className="hm-action-title">Compete</span>
+            <span className="hm-action-desc">Challenge others</span>
           </div>
         </button>
-        <button className="action-link-btn" onClick={() => navigate('/analysis')}>
-          <span className="action-icon">📊</span>
-          <div className="action-content">
-            <span className="action-title">Analysis</span>
-            <span className="action-desc">View insights</span>
+        <button className="hm-action-card" onClick={() => navigate('/analysis')}>
+          <span className="hm-action-icon">📊</span>
+          <div className="hm-action-info">
+            <span className="hm-action-title">Analysis</span>
+            <span className="hm-action-desc">View insights</span>
           </div>
         </button>
       </div>
       
-      {/* Add Task Section */}
-      <form className="add-task-section" onSubmit={handleAddTask}>
+      {/* Add Task Form */}
+      <form className="hm-add-form" onSubmit={handleAddTask}>
         <input
           type="text"
           name="taskName"
           placeholder="Add your fitness goal..."
-          className="task-input"
+          className="hm-add-input"
         />
-        <button type="submit" className="add-btn">+ Add Goal</button>
+        <button type="submit" className="hm-add-btn">+ Add Goal</button>
       </form>
 
       {/* Tasks Table */}
       {tasks.length > 0 && (
-        <div className="tasks-container">
-          <h2 className="current-period">{monthName} {currentYear}</h2>
-          <table className="tasks-table">
-            <thead>
-              <tr>
-                <th className="task-name-header">Goal</th>
-                {days.map(day => (
-                  <th key={day} className={`day-header ${isWeekend(day) ? 'weekend' : ''} ${day === currentDay ? 'today' : ''}`}>
-                    <span className="day-name">{getDayName(day)}</span>
-                    <span className="day-number">{day}</span>
-                  </th>
-                ))}
-                <th className="consistency-header">Score</th>
-                <th className="action-header"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map(task => {
-                const getDateStr = (dayIndex) => `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(dayIndex + 1).padStart(2, '0')}`
-                
-                return (
-                  <tr key={task.id}>
-                    <td className="task-name">{task.name}</td>
-                    {days.map((day, index) => (
-                      <td key={day} className={`day-cell ${isWeekend(day) ? 'weekend' : ''} ${day === currentDay ? 'today' : ''}`}>
-                        <input
-                          type="checkbox"
-                          checked={task.completedDates && task.completedDates[getDateStr(index)] || false}
-                          onChange={() => toggleDay(task.id, index)}
-                          className="day-checkbox"
-                        />
-                      </td>
-                    ))}
-                    <td className="consistency-cell">
-                      <div className="consistency-wrapper">
-                        <span className="consistency-percentage">{calculateConsistency(task.completedDates)}%</span>
-                        <div className="consistency-bar-track">
-                          <div 
-                            className="consistency-bar" 
-                            style={{ 
-                              width: `${calculateConsistency(task.completedDates)}%`
-                            }}
-                          ></div>
+        <div className="hm-tasks-card">
+          <div className="hm-tasks-header">
+            <h2 className="hm-period">{monthName} {currentYear}</h2>
+          </div>
+          <div className="hm-table-wrap">
+            <table className="hm-table">
+              <thead>
+                <tr>
+                  <th>Goal</th>
+                  {days.map(day => (
+                    <th key={day} className={`hm-day-hd ${isWeekend(day) ? 'weekend' : ''} ${day === currentDay ? 'today' : ''}`}>
+                      <span className="hm-day-name">{getDayName(day)}</span>
+                      <span className="hm-day-num">{day}</span>
+                    </th>
+                  ))}
+                  <th className="hm-score-hd">Score</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {tasks.map(task => {
+                  const getDateStr = (dayIndex) => `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(dayIndex + 1).padStart(2, '0')}`
+                  
+                  return (
+                    <tr key={task.id}>
+                      <td className="hm-task-name">{task.name}</td>
+                      {days.map((day, index) => (
+                        <td key={day} className={`hm-day-cell ${isWeekend(day) ? 'weekend' : ''} ${day === currentDay ? 'today' : ''}`}>
+                          <input
+                            type="checkbox"
+                            checked={task.completedDates && task.completedDates[getDateStr(index)] || false}
+                            onChange={() => toggleDay(task.id, index)}
+                            className="hm-check"
+                          />
+                        </td>
+                      ))}
+                      <td className="hm-score-cell">
+                        <div className="hm-score-wrap">
+                          <span className="hm-score-pct">{calculateConsistency(task.completedDates)}%</span>
+                          <div className="hm-score-track">
+                            <div 
+                              className="hm-score-fill" 
+                              style={{ 
+                                width: `${calculateConsistency(task.completedDates)}%`
+                              }}
+                            ></div>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="action-cell">
-                      <button 
-                        onClick={() => deleteTask(task.id)}
-                        className="delete-btn"
-                      >
-                        ✕
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+                      </td>
+                      <td className="hm-del-cell">
+                        <button 
+                          onClick={() => deleteTask(task.id)}
+                          className="hm-del-btn"
+                        >
+                          ✕
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
-      {/* Analysis Button */}
+      {/* Analysis CTA */}
       {tasks.length > 0 && (
-        <div className="analysis-btn-container">
+        <div className="hm-cta-wrap">
           <button 
-            className="analysis-btn"
+            className="hm-cta-btn"
             onClick={() => navigate('/analysis')}
           >
-            <span className="btn-icon">→</span>
+            <span className="hm-cta-icon">→</span>
             View Analysis
           </button>
         </div>
       )}
 
       {tasks.length === 0 && (
-        <div className="no-tasks">
-          <div className="no-tasks-icon">
+        <div className="hm-empty">
+          <div className="hm-empty-icon">
             <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.3"/>
               <circle cx="24" cy="24" r="12" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.5"/>

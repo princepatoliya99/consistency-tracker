@@ -1,7 +1,52 @@
 /* ============================================
-   ABOUT PAGE — Clean, editorial design
+   ABOUT PAGE — Professional Redesign
    ============================================ */
 
+/* ---- Animations ---- */
+@keyframes aboutFadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes aboutFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(15px, -20px) scale(1.05); }
+  66% { transform: translate(-10px, 10px) scale(0.95); }
+}
+
+@keyframes aboutPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes aboutOrb1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -30px) scale(1.15); }
+}
+
+@keyframes aboutOrb2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-30px, 20px) scale(1.1); }
+}
+
+@keyframes aboutRingSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.about-animate {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-animate.about-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- Page ---- */
 .about-page {
   min-height: 100vh;
   background: var(--bg-primary);
@@ -9,22 +54,85 @@
   overflow-x: hidden;
 }
 
-/* ---- Hero ---- */
+/* ============================================
+   HERO
+   ============================================ */
 .about-hero {
-  padding: 6rem 2rem 5rem;
+  padding: 7rem 2rem 5rem;
   text-align: center;
   position: relative;
+  overflow: hidden;
   background: var(--bg-primary);
 }
 
+.about-hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.about-hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+}
+
+.about-hero-orb-1 {
+  width: 500px;
+  height: 500px;
+  background: var(--accent-primary);
+  top: -150px;
+  right: -100px;
+  animation: aboutOrb1 12s ease-in-out infinite;
+}
+
+.about-hero-orb-2 {
+  width: 400px;
+  height: 400px;
+  background: #6366f1;
+  bottom: -100px;
+  left: -100px;
+  animation: aboutOrb2 15s ease-in-out infinite;
+}
+
+.about-hero-orb-3 {
+  width: 250px;
+  height: 250px;
+  background: var(--accent-primary);
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: aboutPulse 6s ease-in-out infinite;
+  opacity: 0.08;
+}
+
+.about-hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, var(--border-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.3;
+  mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+}
+
 .about-hero-inner {
-  max-width: 780px;
+  max-width: 800px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  animation: aboutFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .about-hero-badge {
-  display: inline-block;
-  padding: 0.375rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1.125rem;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -33,16 +141,28 @@
   border: 1.5px solid var(--accent-primary);
   border-radius: 100px;
   margin-bottom: 2rem;
+  background: rgba(37, 99, 235, 0.04);
+}
+
+[data-theme="dark"] .about-hero-badge {
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.about-hero-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  animation: aboutPulse 2s ease-in-out infinite;
 }
 
 .about-hero-title {
-  font-size: clamp(2.5rem, 5.5vw, 4rem);
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
   font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -1.5px;
+  line-height: 1.05;
+  letter-spacing: -2px;
   color: var(--text-primary);
   margin-bottom: 1.5rem;
-  text-align: center;
 }
 
 .about-hero-title span {
@@ -54,24 +174,129 @@
 
 .about-hero-subtitle {
   font-size: clamp(1.05rem, 1.8vw, 1.25rem);
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--text-muted);
   max-width: 620px;
   margin: 0 auto 2.5rem;
   font-weight: 400;
 }
 
-.about-hero-divider {
-  width: 48px;
-  height: 3px;
-  background: var(--gradient-primary);
-  border-radius: 4px;
-  margin: 0 auto;
+.about-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-/* ---- Sections ---- */
+.about-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem 2rem;
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md), var(--shadow-glow);
+  letter-spacing: 0.1px;
+}
+
+.about-hero-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-xl), 0 0 30px rgba(37, 99, 235, 0.3);
+}
+
+.about-hero-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.about-hero-secondary:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: rgba(37, 99, 235, 0.04);
+}
+
+/* ============================================
+   STATS BAR
+   ============================================ */
+.about-stats {
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+  margin-top: -1.5rem;
+}
+
+.about-stats-grid {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 2rem 1rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.about-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  position: relative;
+}
+
+.about-stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 15%;
+  height: 70%;
+  width: 1px;
+  background: var(--border-color);
+}
+
+.about-stat-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.about-stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.about-stat-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.2px;
+}
+
+/* ============================================
+   SECTIONS — SHARED
+   ============================================ */
 .about-section {
-  padding: 5rem 2rem;
+  padding: 6rem 2rem;
 }
 
 .about-section-alt {
@@ -101,6 +326,16 @@
   text-align: center;
 }
 
+.about-section-subhead {
+  font-size: 1.0625rem;
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+  line-height: 1.6;
+  max-width: 550px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* ---- Label Tag ---- */
 .about-label-tag {
   display: inline-block;
@@ -119,47 +354,143 @@
 }
 
 .about-label-tag-light {
-  color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.15);
 }
 
-/* ---- Two-column Problem Section ---- */
-.about-two-col {
+/* ============================================
+   STORY / PROBLEM SECTION
+   ============================================ */
+.about-story-layout {
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 3rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
   align-items: start;
 }
 
-.about-col-label {
-  padding-top: 0.25rem;
+.about-story-left {
+  position: sticky;
+  top: 6rem;
 }
 
-.about-col-content p {
+.about-story-left .about-section-heading {
+  margin-top: 1rem;
+}
+
+.about-story-right p {
   font-size: 1.0625rem;
   line-height: 1.8;
   color: var(--text-muted);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
-.about-col-content p:last-child {
-  margin-bottom: 0;
+.about-story-right p strong {
+  color: var(--text-primary);
 }
 
-.about-emphasis {
-  color: var(--text-primary) !important;
-  font-weight: 600;
-  padding: 1.25rem 1.5rem;
-  border-left: 3px solid var(--accent-primary);
+.about-blockquote {
+  position: relative;
+  padding: 1.75rem 2rem 1.75rem 2rem;
+  margin: 2rem 0;
   background: var(--bg-secondary);
+  border-left: 4px solid var(--accent-primary);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--text-primary);
+  font-style: italic;
 }
 
-/* ---- Beliefs Grid ---- */
+.about-blockquote-mark {
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--accent-primary);
+  opacity: 0.15;
+  font-style: normal;
+}
+
+/* ============================================
+   MISSION SECTION
+   ============================================ */
+.about-mission {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.about-mission-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+}
+
+.about-mission-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-color);
+  transition: border-color 0.4s ease;
+}
+
+.about-mission-ring-outer {
+  width: 240px;
+  height: 240px;
+  border-style: dashed;
+  animation: aboutRingSpin 40s linear infinite;
+}
+
+.about-mission-ring-middle {
+  width: 170px;
+  height: 170px;
+  border-color: var(--accent-primary);
+  opacity: 0.3;
+  animation: aboutRingSpin 25s linear infinite reverse;
+  position: absolute;
+}
+
+.about-mission-ring-inner {
+  width: 100px;
+  height: 100px;
+  background: rgba(37, 99, 235, 0.06);
+  border-color: var(--accent-primary);
+  position: absolute;
+}
+
+[data-theme="dark"] .about-mission-ring-inner {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.about-mission-icon {
+  font-size: 2rem;
+  color: var(--accent-primary);
+}
+
+.about-mission-content .about-section-heading {
+  margin-top: 1rem;
+}
+
+.about-mission-desc {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+  margin-top: 1.25rem;
+}
+
+/* ============================================
+   BELIEFS GRID
+   ============================================ */
 .about-beliefs-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .about-belief-card {
@@ -167,25 +498,56 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 2.25rem 2rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-belief-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: opacity 0.35s ease;
 }
 
 .about-belief-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   box-shadow: var(--shadow-lg);
   border-color: var(--accent-primary);
 }
 
-.about-belief-number {
-  font-size: 2.5rem;
-  font-weight: 800;
-  letter-spacing: -1px;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1;
+.about-belief-card:hover::before {
+  opacity: 1;
+}
+
+.about-belief-icon-wrap {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(37, 99, 235, 0.08);
+  border-radius: var(--radius-md);
+  color: var(--accent-primary);
   margin-bottom: 1.25rem;
+}
+
+[data-theme="dark"] .about-belief-icon-wrap {
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.about-belief-number {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--accent-primary);
+  opacity: 0.5;
+  margin-bottom: 0.75rem;
 }
 
 .about-belief-card h3 {
@@ -203,106 +565,232 @@
   color: var(--text-muted);
 }
 
-/* ---- Features Grid ---- */
-.about-features-grid {
+/* ============================================
+   BENTO GRID (Features)
+   ============================================ */
+.about-bento-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background: var(--border-color);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.about-bento-card {
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-.about-feature-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.25rem;
   padding: 2rem;
-  background: var(--bg-card);
-  transition: background 0.25s ease;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
-.about-feature-card:hover {
-  background: var(--bg-hover);
+.about-bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent-primary);
 }
 
-.about-feature-icon {
-  width: 44px;
-  height: 44px;
+.about-bento-large {
+  grid-column: span 2;
+}
+
+.about-bento-icon {
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--accent-primary);
   background: rgba(37, 99, 235, 0.08);
   border-radius: var(--radius-md);
-  flex-shrink: 0;
+  color: var(--accent-primary);
+  margin-bottom: 1.25rem;
 }
 
-[data-theme="dark"] .about-feature-icon {
+[data-theme="dark"] .about-bento-icon {
   background: rgba(59, 130, 246, 0.12);
 }
 
-.about-feature-text h3 {
-  font-size: 1.0625rem;
+.about-bento-card h3 {
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.5rem;
   letter-spacing: -0.2px;
 }
 
-.about-feature-text p {
-  font-size: 0.9rem;
-  line-height: 1.6;
+.about-bento-card p {
+  font-size: 0.9375rem;
+  line-height: 1.65;
   color: var(--text-muted);
 }
 
-/* ---- Audience Grid ---- */
+/* ============================================
+   AUDIENCE GRID
+   ============================================ */
 .about-audience-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
 }
 
 .about-audience-card {
-  padding: 2rem;
+  padding: 2rem 1.75rem;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .about-audience-card:hover {
   border-color: var(--accent-primary);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.about-audience-card:hover .about-audience-arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.about-audience-emoji {
+  font-size: 2.25rem;
+  margin-bottom: 1rem;
 }
 
 .about-audience-card h3 {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 0.625rem;
-  letter-spacing: -0.3px;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.2px;
 }
 
 .about-audience-card p {
-  font-size: 0.9375rem;
-  line-height: 1.7;
+  font-size: 0.875rem;
+  line-height: 1.65;
   color: var(--text-muted);
 }
 
-/* ---- Manifesto ---- */
+.about-audience-arrow {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  color: var(--accent-primary);
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: all 0.3s ease;
+}
+
+/* ============================================
+   TESTIMONIALS
+   ============================================ */
+.about-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.about-testimonial-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.about-testimonial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent-primary);
+}
+
+.about-testimonial-stars {
+  color: #f59e0b;
+  font-size: 0.875rem;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+}
+
+.about-testimonial-quote {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  font-weight: 500;
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.about-testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.about-testimonial-avatar {
+  font-size: 1.75rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(37, 99, 235, 0.06);
+  border-radius: 50%;
+}
+
+[data-theme="dark"] .about-testimonial-avatar {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.about-testimonial-author strong {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.about-testimonial-author span {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+/* ============================================
+   MANIFESTO
+   ============================================ */
 .about-manifesto {
   background: var(--gradient-primary);
-  padding: 5rem 2rem;
+  padding: 6rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-manifesto-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.about-manifesto-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  filter: blur(100px);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .about-manifesto-inner {
   text-align: center;
   max-width: 700px;
+  position: relative;
+  z-index: 1;
 }
 
 .about-manifesto-lines {
@@ -327,10 +815,12 @@
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* ---- CTA ---- */
+/* ============================================
+   CTA
+   ============================================ */
 .about-cta {
   background: var(--bg-primary);
-  padding: 5rem 2rem;
+  padding: 6rem 2rem;
 }
 
 .about-cta-inner {
@@ -338,13 +828,44 @@
   max-width: 700px;
 }
 
-.about-cta-text {
-  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-  font-weight: 600;
+.about-cta-badge {
+  display: inline-block;
+  padding: 0.3rem 0.875rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  background: rgba(37, 99, 235, 0.08);
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+[data-theme="dark"] .about-cta-badge {
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.about-cta-heading {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.4;
-  letter-spacing: -0.5px;
+  line-height: 1.3;
+  letter-spacing: -0.8px;
+  margin-bottom: 1rem;
+}
+
+.about-cta-sub {
+  font-size: 1.0625rem;
+  color: var(--text-muted);
   margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.about-cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .about-cta-btn {
@@ -373,36 +894,126 @@
   transform: translateY(-1px);
 }
 
+.about-cta-note {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-top: 1.25rem;
+  font-weight: 500;
+}
+
 /* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 1024px) {
   .about-beliefs-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 1.25rem;
   }
 
-  .about-features-grid {
-    grid-template-columns: 1fr;
+  .about-beliefs-grid .about-belief-card:last-child {
+    grid-column: span 2;
+  }
+
+  .about-bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about-bento-large {
+    grid-column: span 2;
+  }
+
+  .about-audience-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about-testimonials-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .about-testimonials-grid .about-testimonial-card:last-child {
+    grid-column: span 2;
+    max-width: 50%;
+    margin: 0 auto;
+  }
+
+  .about-mission {
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
   }
 }
 
 @media (max-width: 768px) {
   .about-hero {
-    padding: 4rem 1.5rem 3.5rem;
+    padding: 5rem 1.5rem 3.5rem;
   }
 
   .about-hero-title {
     letter-spacing: -1px;
   }
 
-  .about-section {
-    padding: 3.5rem 1.5rem;
+  .about-hero-orb-1 {
+    width: 300px;
+    height: 300px;
   }
 
-  .about-two-col {
-    grid-template-columns: 1fr;
+  .about-hero-orb-2 {
+    width: 250px;
+    height: 250px;
+  }
+
+  .about-section {
+    padding: 4rem 1.5rem;
+  }
+
+  .about-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
+    padding: 1.75rem 1.25rem;
+  }
+
+  .about-stat-item:nth-child(2)::after {
+    display: none;
+  }
+
+  .about-stat-item:nth-child(1)::after,
+  .about-stat-item:nth-child(3)::after {
+    height: 100%;
+    top: 0;
+  }
+
+  .about-story-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .about-story-left {
+    position: static;
+  }
+
+  .about-mission {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    text-align: center;
+  }
+
+  .about-mission-visual {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  .about-mission-ring-outer {
+    width: 180px;
+    height: 180px;
+  }
+
+  .about-mission-ring-middle {
+    width: 130px;
+    height: 130px;
+  }
+
+  .about-mission-ring-inner {
+    width: 80px;
+    height: 80px;
   }
 
   .about-beliefs-grid {
@@ -410,21 +1021,23 @@
     gap: 1rem;
   }
 
+  .about-beliefs-grid .about-belief-card:last-child {
+    grid-column: span 1;
+  }
+
   .about-belief-card {
     padding: 1.75rem 1.5rem;
   }
 
-  .about-belief-number {
-    font-size: 2rem;
-    margin-bottom: 0.875rem;
-  }
-
-  .about-features-grid {
+  .about-bento-grid {
     grid-template-columns: 1fr;
-    border-radius: var(--radius-md);
   }
 
-  .about-feature-card {
+  .about-bento-large {
+    grid-column: span 1;
+  }
+
+  .about-bento-card {
     padding: 1.5rem;
   }
 
@@ -437,8 +1050,18 @@
     padding: 1.5rem;
   }
 
+  .about-testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .about-testimonials-grid .about-testimonial-card:last-child {
+    grid-column: span 1;
+    max-width: 100%;
+  }
+
   .about-manifesto {
-    padding: 3.5rem 1.5rem;
+    padding: 4rem 1.5rem;
   }
 
   .about-manifesto-lines p {
@@ -451,25 +1074,35 @@
   }
 
   .about-cta {
-    padding: 3.5rem 1.5rem;
+    padding: 4rem 1.5rem;
   }
 
-  .about-cta-text {
-    font-size: 1.25rem;
+  .about-cta-heading {
+    font-size: 1.5rem;
   }
 
   .about-section-heading {
     font-size: 1.75rem;
   }
+
+  .about-hero-actions {
+    flex-direction: column;
+  }
+
+  .about-hero-cta,
+  .about-hero-secondary {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
   .about-hero {
-    padding: 3rem 1rem 2.5rem;
+    padding: 3.5rem 1rem 2.5rem;
   }
 
   .about-hero-title {
-    font-size: 2rem;
+    font-size: 2.25rem;
     letter-spacing: -0.5px;
   }
 
@@ -478,30 +1111,45 @@
   }
 
   .about-section {
-    padding: 2.5rem 1rem;
+    padding: 3rem 1rem;
+  }
+
+  .about-stats-grid {
+    padding: 1.25rem 1rem;
+    gap: 1.25rem;
+  }
+
+  .about-stat-value {
+    font-size: 1.5rem;
+  }
+
+  .about-stat-label {
+    font-size: 0.75rem;
   }
 
   .about-belief-card {
     padding: 1.5rem 1.25rem;
   }
 
-  .about-feature-card {
+  .about-bento-card {
     padding: 1.25rem;
-    gap: 1rem;
   }
 
-  .about-feature-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 1.1rem;
+  .about-bento-icon {
+    width: 42px;
+    height: 42px;
   }
 
   .about-audience-card {
     padding: 1.25rem;
   }
 
+  .about-testimonial-card {
+    padding: 1.5rem;
+  }
+
   .about-manifesto {
-    padding: 2.5rem 1rem;
+    padding: 3rem 1rem;
   }
 
   .about-manifesto-lines p {
@@ -513,11 +1161,11 @@
   }
 
   .about-cta {
-    padding: 2.5rem 1rem;
+    padding: 3rem 1rem;
   }
 
-  .about-cta-text {
-    font-size: 1.125rem;
+  .about-cta-heading {
+    font-size: 1.25rem;
   }
 
   .about-cta-btn {

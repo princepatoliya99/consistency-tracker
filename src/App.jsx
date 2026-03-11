@@ -10,10 +10,11 @@ import RewardsPage from './components/RewardsPage'
 import UserProfilePage from './components/UserProfilePage'
 import About from './components/About'
 import HelpCenter from './components/HelpCenter'
+import PrivacyPolicy from './components/PrivacyPolicy'
+import TermsOfService from './components/TermsOfService'
 import Login from './components/Login'
 import Signup from './components/Signup'
 import './App.css'
-import './styles/rewards.css'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -141,6 +142,26 @@ function App() {
                 <HelpCenter theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout} />
               </Layout> :
               <HelpCenter theme={theme} toggleTheme={toggleTheme} currentUser={null} handleLogout={() => {}} />
+            } 
+          />
+          <Route 
+            path="/privacy" 
+            element={
+              isAuthenticated ? 
+              <Layout theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout}>
+                <PrivacyPolicy />
+              </Layout> :
+              <PrivacyPolicy />
+            } 
+          />
+          <Route 
+            path="/terms" 
+            element={
+              isAuthenticated ? 
+              <Layout theme={theme} toggleTheme={toggleTheme} currentUser={currentUser} handleLogout={handleLogout}>
+                <TermsOfService />
+              </Layout> :
+              <TermsOfService />
             } 
           />
         </Routes>

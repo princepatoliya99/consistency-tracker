@@ -62,8 +62,8 @@ function Footer() {
             <ul className="footer-links">
               <li><Link to="/about">About Us</Link></li>
               <li><Link to="/help">Help Center</Link></li>
-              <li><a href="#privacy">Privacy Policy</a></li>
-              <li><a href="#terms">Terms of Service</a></li>
+              <li><Link to="/privacy">Privacy Policy</Link></li>
+              <li><Link to="/terms">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
